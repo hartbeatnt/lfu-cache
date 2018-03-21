@@ -24,6 +24,37 @@ class IndexedList {
     this.size++;
   }
 
+  addToHead(key, value) {
+    let node = { key, value };
+    if (this.index[key]) {
+      this.remove(key);
+    }
+    this.index[key] = node;
+    if (this.head) {
+      node.next = this.head;
+      this.head.prev = node;
+    } else {
+      node.next = null;
+      this.tail = node;
+    }
+    node.prev = null;
+    this.head = node;
+    this.size++;
+  }
+
+  addAfterKey(prevKey, key, value) {
+    let node = { key, value };
+    let neighbor = this.get(prevKey);
+    if (this.index[key]) {
+      this.remove(key);
+    }
+    this.index[key] = node;
+    node.next = neighbor.next;
+    node.next.prev = node;
+    node.prev = neighbor;
+    neighbor.next = node;
+  }
+
   decapitate() {
     let node = this.head;
     if (!node) return false;
@@ -35,16 +66,13 @@ class IndexedList {
       this.head = null;
     }
     this.size--;
-    return {
-      key: node.key,
-      value: node.value,
-    };
+    return node;
   }
 
   get(key) {
     let node = this.index[key];
     if(!node) return false;
-    return node.value;
+    return node;
   }
 
   remove(key) {
@@ -62,7 +90,7 @@ class IndexedList {
       this.tail = node.prev;
     }
     this.size--;
-    return node.value;
+    return node;
   }
 }
 
